@@ -1,5 +1,7 @@
-#include <parser.h>
+#ifndef PARSER_CHARACTER_H
+#define PARSER_CHARACTER_H
 #include <optional>
+#include "parser.h"
 
 Parser<char> auto character(char c)
 {
@@ -12,3 +14,4 @@ Parser<char> auto character(char c)
         return std::nullopt;
     };
 }
+#endif // PARSER_CHARACTER_H
