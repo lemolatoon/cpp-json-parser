@@ -11,14 +11,15 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(googleTest 
-  character_test.cpp 
-  digits_test.cpp
-  skip_whitespace_test.cpp
-  string_test.cpp
-  map_test.cpp
-  choice_test.cpp
-)
+# add_executable(googleTest 
+#   character_test.cpp 
+#   digits_test.cpp
+#   skip_whitespace_test.cpp
+#   string_test.cpp
+#   map_test.cpp
+#   choice_test.cpp
+# )
+add_executable(googleTest all.cpp)
 
 
 # internal
@@ -26,5 +27,6 @@ target_link_libraries(googleTest parser exception)
 # external
 target_link_libraries(googleTest gtest_main)
 target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/test)
 
 enable_testing()

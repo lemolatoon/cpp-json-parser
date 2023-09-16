@@ -1,5 +1,4 @@
-#include "parser.h"
-#include "parser/string.h"
+#include "parsers.h"
 #include "gtest/gtest.h"
 
 TEST(ParserTest, String) {

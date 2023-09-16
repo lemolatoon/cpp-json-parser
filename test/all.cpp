@@ -1,0 +1,6 @@
+#include "character_test.cpp"
+#include "choice_test.cpp"
+#include "digits_test.cpp"
+#include "map_test.cpp"
+#include "skip_whitespace_test.cpp"
+#include "string_test.cpp"

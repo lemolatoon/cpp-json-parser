@@ -1,8 +1,4 @@
-#include "parser.h"
-#include "parser/choice.h"
-#include "parser/digits.h"
-#include "parser/map.h"
-#include "parser/string.h"
+#include "parsers.h"
 #include "gtest/gtest.h"
 #include <vector>
 
@@ -16,10 +12,10 @@ TEST(ParserTest, Choice) {
   EXPECT_EQ(parsed1.value, 11);
   EXPECT_EQ(parsed1.remaining, "* 456 ");
 
-  auto parsed2 = parsers::digits("null * 123");
-  EXPECT_EQ(parsed1.value, 4);
-  EXPECT_EQ(parsed1.remaining, "* 123");
+  auto parsed2 = parser("null * 123").value();
+  EXPECT_EQ(parsed2.value, 4);
+  EXPECT_EQ(parsed2.remaining, " * 123");
 
-  auto parsed3 = parsers::digits("fuga * 123");
-  EXPECT_TRUE(!parsed2.has_value());
+  auto parsed3 = parser("fuga * 123");
+  EXPECT_TRUE(!parsed3.has_value());
 }

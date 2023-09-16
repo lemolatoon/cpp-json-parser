@@ -1,6 +1,4 @@
-#include "parser.h"
-#include "parser/digits.h"
-#include "parser/map.h"
+#include "parsers.h"
 #include "gtest/gtest.h"
 #include <vector>
 

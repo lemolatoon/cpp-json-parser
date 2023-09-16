@@ -1,6 +1,4 @@
-#include "parser.h"
-#include "parser/digits.h"
-#include "parser/skip_whitespace.h"
+#include "parsers.h"
 #include "gtest/gtest.h"
 
 TEST(ParserTest, SkipWhitespace) {

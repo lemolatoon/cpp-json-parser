@@ -1,5 +1,4 @@
-#include "parser.h"
-#include "parser/digits.h"
+#include "parsers.h"
 #include "gtest/gtest.h"
 
 TEST(ParserTest, Digits) {

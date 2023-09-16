@@ -1,5 +1,4 @@
-#include "parser.h"
-#include "parser/character.h"
+#include "parsers.h"
 #include "gtest/gtest.h"
 
 TEST(ParserTest, Character) {
