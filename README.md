@@ -15,3 +15,23 @@ sudo apt install -y g++-11
 ...
 export CXX='g++-20'
 ```
+
+### vscodeでの注意点
+1. 以下のextensionをdisableにする。
+```
+Name: C/C++
+Id: ms-vscode.cpptools
+Description: C/C++ IntelliSense, debugging, and code browsing.
+Version: 1.17.5
+Publisher: Microsoft
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
+```
+2. 以下のextensionをenableにする。
+```
+Name: CMake Tools
+Id: ms-vscode.cmake-tools
+Description: Extended CMake support in Visual Studio Code
+Version: 1.15.31
+Publisher: Microsoft
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
+```

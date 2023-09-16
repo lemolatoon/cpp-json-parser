@@ -1,10 +1,10 @@
 .PHONY: configure build run test clean FORCE
 
 configure: FORCE
-	cmake -S . -B build
+	cmake -GNinja -S . -B build
 
 build: configure
-	cmake --build build
+	cd build && ninja
 
 run: build
 	./build/src/a.out
