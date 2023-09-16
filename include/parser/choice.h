@@ -10,8 +10,8 @@ namespace parsers {
  *  できなかったときは２つ目のパーサーの結果を返す。
  */
 template <class T>
-Parser<T> auto choice(Parser<T> auto primary_parser,
-                      Parser<T> auto secondary_parser) {
+Parser<T> auto inline choice(Parser<T> auto primary_parser,
+                             Parser<T> auto secondary_parser) {
   return [=](std::string_view input) -> std::optional<ParserResult<T>> {
     auto result = primary_parser(input);
 

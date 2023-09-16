@@ -15,7 +15,7 @@ concept Mapper = std::is_invocable_r_v<U, F, T>;
  *  パーサーとマッパーを受けとり、パーサーの結果をマップして返すパーサーを返す。
  */
 template <class T, class U>
-Parser<U> auto map(Parser<T> auto parser, Mapper<T, U> auto mapper) {
+Parser<U> auto inline map(Parser<T> auto parser, Mapper<T, U> auto mapper) {
   return [=](std::string_view input) -> std::optional<ParserResult<U>> {
     auto result = parser(input);
 

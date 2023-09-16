@@ -6,7 +6,7 @@
 
 namespace parsers {
 
-Parser<std::string_view> auto string(std::string_view literal) {
+Parser<std::string_view> auto inline string(std::string_view literal) {
   return [=](std::string_view input)
              -> std::optional<ParserResult<std::string_view>> {
     if (input.empty() || input.size() < literal.size())

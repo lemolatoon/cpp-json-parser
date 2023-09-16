@@ -5,7 +5,7 @@
 
 namespace parsers {
 
-Parser<char> auto character(char c) {
+Parser<char> auto inline character(char c) {
   return [=](std::string_view input) -> std::optional<ParserResult<char>> {
     if (input.empty())
       return std::nullopt;

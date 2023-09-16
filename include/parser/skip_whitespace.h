@@ -9,7 +9,8 @@ namespace parsers {
  *  パーサーを受けとり、最初に空白を読み飛ばすてから、パーサーを適用するようなパーサーを返す。
  *  具体的には、' ', '\t', '\n' を読み飛ばす。
  */
-template <class T> Parser<T> auto skip_whitespace(Parser<T> auto parser) {
+template <class T>
+Parser<T> auto inline skip_whitespace(Parser<T> auto parser) {
   return [=](std::string_view input) -> std::optional<ParserResult<T>> {
     if (input.empty())
       return parser(input);
