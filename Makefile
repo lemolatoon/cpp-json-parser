@@ -4,7 +4,7 @@ configure: FORCE
 	cmake -GNinja -S . -B build $(CMAKE_ARGS)
 
 build: configure
-	cd build && ninja
+	ninja -C build
 
 run: build
 	./build/src/a.out
