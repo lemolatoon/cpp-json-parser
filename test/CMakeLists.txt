@@ -17,6 +17,7 @@ add_executable(googleTest
   skip_whitespace_test.cpp
   string_test.cpp
   map_test.cpp
+  choice_test.cpp
 )
 
 
