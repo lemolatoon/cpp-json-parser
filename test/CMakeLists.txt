@@ -20,6 +20,7 @@ add_executable(googleTest
   choice_test.cpp
   join_test.cpp
   many_test.cpp
+  separated_test.cpp
 )
 
 

@@ -9,6 +9,7 @@
 #include "parser/join.h"
 #include "parser/many.h"
 #include "parser/map.h"
+#include "parser/separated.h"
 #include "parser/skip_whitespace.h"
 #include "parser/string.h"
 
