@@ -2,7 +2,7 @@
 #include "parser/character.h"
 #include "gtest/gtest.h"
 
-TEST(CharacterTest, CharacterTest) {
+TEST(ParserTest, Character) {
   Parser<char> auto h_char_parser = parsers::character('h');
   auto parsed1 = h_char_parser("hoge").value();
   EXPECT_EQ(parsed1.value, 'h');

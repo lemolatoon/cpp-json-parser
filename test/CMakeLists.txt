@@ -11,7 +11,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(googleTest character_test.cpp)
+add_executable(googleTest character_test.cpp digits_test.cpp)
 target_link_libraries(googleTest gtest_main)
 target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
