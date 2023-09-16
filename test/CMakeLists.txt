@@ -16,6 +16,7 @@ add_executable(googleTest
   digits_test.cpp
   skip_whitespace_test.cpp
   string_test.cpp
+  map_test.cpp
 )
 
 
