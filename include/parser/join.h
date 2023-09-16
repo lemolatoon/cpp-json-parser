@@ -7,8 +7,9 @@
 namespace parsers {
 
 /**
- *  パーサーと２つを受けとり、１つ目でパースが`std::nullopt`でないときは、その結果を、
- *  できなかったときは２つ目のパーサーの結果を返す。
+ *  パーサー２つを受けとり、１つ目でパースが`std::nullopt`でないときは、
+ *  そのremainingにさらに２つ目のパーサーを適用して結果のvalueのstd::pairを返す。
+ *  ２つ目のパーサーの結果が`std::nullopt`なら、`std::nullopt`を返す。
  */
 template <class T, class U>
 Parser<std::pair<T, U>> auto inline join(Parser<T> auto primary_parser,
