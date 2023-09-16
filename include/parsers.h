@@ -7,6 +7,7 @@
 #include "parser/choice.h"
 #include "parser/digits.h"
 #include "parser/join.h"
+#include "parser/many.h"
 #include "parser/map.h"
 #include "parser/skip_whitespace.h"
 #include "parser/string.h"

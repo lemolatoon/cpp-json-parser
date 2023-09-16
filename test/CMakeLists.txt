@@ -19,6 +19,7 @@ add_executable(googleTest
   map_test.cpp
   choice_test.cpp
   join_test.cpp
+  many_test.cpp
 )
 
 
