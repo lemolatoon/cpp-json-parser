@@ -14,3 +14,8 @@ test: build
 
 clean: FORCE
 	rm -rf build
+
+fmt: FORCE
+	find src -name "*.cpp" | xargs clang-format -i
+	find test -name "*.cpp" | xargs clang-format -i
+	find include -name "*.h" | xargs clang-format -i
