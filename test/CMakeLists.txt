@@ -15,5 +15,4 @@ add_executable(googleTest character_test.cpp)
 target_link_libraries(googleTest gtest_main)
 target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-add_test(NAME CharacterTest COMMAND googleTest)
 enable_testing()

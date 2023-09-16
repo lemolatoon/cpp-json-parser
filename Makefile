@@ -1,7 +1,7 @@
 .PHONY: configure build run test clean FORCE
 
 configure: FORCE
-	cmake -GNinja -S . -B build
+	cmake -GNinja -S . -B build $(CMAKE_ARGS)
 
 build: configure
 	cd build && ninja
