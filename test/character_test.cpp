@@ -7,5 +7,6 @@ TEST(CharacterTest, CharacterTest) {
   auto parsed1 = h_char_parser("hoge").value();
   EXPECT_EQ(parsed1.value, 'h');
   EXPECT_EQ(parsed1.remaining, "oge");
-  auto parsed2 = h_char_parser("hoge").value();
+  auto parsed2 = h_char_parser("fuga");
+  EXPECT_TRUE(!parsed2.has_value());
 }
