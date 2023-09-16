@@ -3,6 +3,8 @@
 #include "parser.h"
 #include <optional>
 
+namespace parsers {
+
 Parser<char> auto character(char c) {
   return [=](std::string_view input) -> std::optional<ParserResult<char>> {
     if (input.empty())
@@ -12,4 +14,7 @@ Parser<char> auto character(char c) {
     return std::nullopt;
   };
 }
+
+} // namespace parsers
+
 #endif // PARSER_CHARACTER_H
