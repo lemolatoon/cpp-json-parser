@@ -18,6 +18,7 @@ add_executable(googleTest
   string_test.cpp
   map_test.cpp
   choice_test.cpp
+  join_test.cpp
 )
 
 

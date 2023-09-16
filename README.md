@@ -35,3 +35,11 @@ Version: 1.15.31
 Publisher: Microsoft
 VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
 ```
+```
+Name: clangd
+Id: llvm-vs-code-extensions.vscode-clangd
+Description: C/C++ completion, navigation, and insights
+Version: 0.1.24
+Publisher: LLVM
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd
+```
