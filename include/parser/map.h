@@ -16,13 +16,13 @@ concept Mapper = std::is_invocable_r_v<U, F, T>;
  */
 template <class T, class U>
 Parser<U> auto map(Parser<T> auto parser, Mapper<T, U> auto mapper) {
-  return [=](std::string_view input) -> std::optional<ParserResult<T>> {
+  return [=](std::string_view input) -> std::optional<ParserResult<U>> {
     auto result = parser(input);
 
     if (result.has_value()) {
       auto value = result.value();
 
-      return ParserResult<T>{
+      return ParserResult<U>{
           mapper(value.value),
           value.remaining,
       };
