@@ -51,13 +51,11 @@ TEST(ParserTest, Joins) {
   EXPECT_TRUE(!parsed4.has_value());
 
   auto parser2 = parsers::choice<std::string>(
-      map<std::string_view, std::string>(parsers::string("[error]"),
-                                         [](auto s) { return std::string(s); }),
-      map<std::tuple<char, int, int>, std::string>(
-          parsers::joins(parsers::skip_whitespace<char>(plus_minus),
+      map(parsers::string("[error]"), [](auto s) { return std::string(s); }),
+      map(parsers::joins(parsers::skip_whitespace<char>(plus_minus),
                          parsers::digits,
                          parsers::skip_whitespace<int>(parsers::digits)),
-          [](auto tuple) -> std::string {
+          [](auto tuple) {
             auto [sign, digit, digit2] = tuple;
             if (sign == '-') {
               digit *= -1;

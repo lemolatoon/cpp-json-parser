@@ -88,6 +88,7 @@ concept Parser = std::conditional_t<
 /*
  * concept Parser
  * を満たすテンプレート型引数を受け取り、そのパーサーの呼び出しの戻り値を返す。
+ * つまり `Parser<T>` から `T` を取り出す。
  */
 template <Parser F>
 using ParserReturnType = UnwrapParserResult<

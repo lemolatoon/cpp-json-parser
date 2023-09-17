@@ -4,7 +4,7 @@
 
 TEST(ParserTest, Map) {
   auto mapper = [](int x) { return std::vector(x / 2, x * 2); };
-  auto parser = parsers::map<int, std::vector<int>>(parsers::digits, mapper);
+  auto parser = parsers::map(parsers::digits, mapper);
 
   auto parsed1 = parser("11* 456 ").value();
   EXPECT_EQ(parsed1.value, (std::vector{22, 22, 22, 22, 22}));

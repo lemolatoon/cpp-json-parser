@@ -4,9 +4,8 @@
 
 TEST(ParserTest, Choice) {
   auto parser = parsers::choice<int>(
-      parsers::digits,
-      parsers::map<std::string_view, int>(
-          parsers::string("null"), [](auto s) -> int { return s.size(); }));
+      parsers::digits, parsers::map(parsers::string("null"),
+                                    [](auto s) -> int { return s.size(); }));
 
   auto parsed1 = parser("11* 456 ").value();
   EXPECT_EQ(parsed1.value, 11);
