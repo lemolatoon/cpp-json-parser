@@ -1,4 +1,6 @@
 .PHONY: configure build run test clean FORCE
+	
+CLANG_FORMAT=clang-format-14
 
 configure: FORCE
 	cmake -GNinja -S . -B build $(CMAKE_ARGS)
@@ -16,6 +18,6 @@ clean: FORCE
 	rm -rf build
 
 fmt: FORCE
-	find src -name "*.cpp" | xargs clang-format -i
-	find test -name "*.cpp" | xargs clang-format -i
-	find include -name "*.h" | xargs clang-format -i
+	find src -name "*.cpp" | xargs $(CLANG_FORMAT) -i
+	find test -name "*.cpp" | xargs $(CLANG_FORMAT) -i
+	find include -name "*.h" | xargs $(CLANG_FORMAT) -i

@@ -45,38 +45,39 @@ Parser<std::pair<T, U>> auto inline join(Parser<T> auto primary_parser,
 auto inline joins(Parser auto primary_parser, Parser auto... secondary_parsers)
     -> Parser<
         std::tuple<ParserReturnType<decltype(primary_parser)>,
-                   ParserReturnType<decltype(secondary_parsers)>...>> auto {
-  return [=](std::string_view input)
-             -> std::optional<ParserResult<std::tuple<
-                 ParserReturnType<decltype(primary_parser)>,
-                 ParserReturnType<decltype(secondary_parsers)>...>>> {
-    auto result = primary_parser(input);
+                   ParserReturnType<decltype(secondary_parsers)>...>> auto{
+  return
+      [=](std::string_view input)
+          -> std::optional<ParserResult<
+              std::tuple<ParserReturnType<decltype(primary_parser)>,
+                         ParserReturnType<decltype(secondary_parsers)>...>>> {
+        auto result = primary_parser(input);
 
-    if (!result.has_value())
-      return std::nullopt;
+        if (!result.has_value())
+          return std::nullopt;
 
-    auto value = result.value();
+        auto value = result.value();
 
-    if constexpr (sizeof...(secondary_parsers) > 0) {
-      auto rest = joins(secondary_parsers...)(value.remaining);
+        if constexpr (sizeof...(secondary_parsers) > 0) {
+          auto rest = joins(secondary_parsers...)(value.remaining);
 
-      if (!rest.has_value())
-        return std::nullopt;
+          if (!rest.has_value())
+            return std::nullopt;
 
-      auto rest_value = rest.value();
+          auto rest_value = rest.value();
 
-      return ParserResult<
-          std::tuple<ParserReturnType<decltype(primary_parser)>,
-                     ParserReturnType<decltype(secondary_parsers)>...>>{
-          std::tuple_cat(std::tuple{value.value}, rest_value.value),
-          rest_value.remaining};
-    } else {
-      return ParserResult<
-          std::tuple<ParserReturnType<decltype(primary_parser)>,
-                     ParserReturnType<decltype(secondary_parsers)>...>>{
-          std::tuple{value.value}, value.remaining};
-    }
-  };
+          return ParserResult<
+              std::tuple<ParserReturnType<decltype(primary_parser)>,
+                         ParserReturnType<decltype(secondary_parsers)>...>>{
+              std::tuple_cat(std::tuple{value.value}, rest_value.value),
+              rest_value.remaining};
+        } else {
+          return ParserResult<
+              std::tuple<ParserReturnType<decltype(primary_parser)>,
+                         ParserReturnType<decltype(secondary_parsers)>...>>{
+              std::tuple{value.value}, value.remaining};
+        }
+      };
 }
 
 } // namespace parsers
