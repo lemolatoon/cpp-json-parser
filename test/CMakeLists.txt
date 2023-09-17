@@ -21,6 +21,7 @@ add_executable(googleTest
   join_test.cpp
   many_test.cpp
   separated_test.cpp
+  regex_test.cpp
 )
 
 
