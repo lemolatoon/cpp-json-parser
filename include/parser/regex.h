@@ -9,6 +9,10 @@
 
 namespace parsers {
 
+/*
+ * regexを受け取り、マッチした部分を返し、そのマッチ部分より後のstring_viewをreaming
+ * とするようなパーサーを返す。
+ */
 Parser<std::string_view> auto inline regex(std::regex re) {
   return [=](std::string_view input)
              -> std::optional<ParserResult<std::string_view>> {
@@ -21,7 +25,9 @@ Parser<std::string_view> auto inline regex(std::regex re) {
       return std::nullopt;
 
     auto matched_view = std::string_view(first_match.first, first_match.second);
-    auto remaining = std::string_view(input.substr(matched_view.size()));
+
+    auto remaining_start_index = first_match.second - std::begin(input);
+    auto remaining = std::string_view(input.substr(remaining_start_index));
 
     return ParserResult<std::string_view>{matched_view, remaining};
   };
