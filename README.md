@@ -16,6 +16,19 @@ sudo apt install -y g++-11
 export CXX='g++-20'
 ```
 
+### clang-format-14がないとき (Ubuntuの場合)
+
+https://apt.llvm.org/ を基に、llvm v14 を install して、apt installする
+2023/09/17の時点では以下の手順
+```
+$ wget https://apt.llvm.org/llvm.sh
+$ chmod +x llvm.sh
+$ sudo ./llvm.sh 14
+$ apt list | grep clang-format-14
+clang-format-14/unknown,now 1:14.0.6~++20230131082221+f28c006a5895-1~exp1~20230131082248.184 amd64
+$ sudo apt install clang-format-14
+```
+
 ### vscodeでの注意点
 1. 以下のextensionをdisableにする。
 ```
