@@ -2,8 +2,7 @@
 #include "gtest/gtest.h"
 
 TEST(ParserTest, Many) {
-  auto parser =
-      parsers::many<int>(parsers::skip_whitespace<int>(parsers::digits));
+  auto parser = parsers::many(parsers::skip_whitespace(parsers::digits));
 
   auto parsed1 = parser(" 12  123* 456 ").value();
   EXPECT_EQ(parsed1.value, (std::vector{12, 123}));

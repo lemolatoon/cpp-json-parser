@@ -3,7 +3,7 @@
 #include <vector>
 
 TEST(ParserTest, Map) {
-  auto mapper = [](int x) { return std::vector(x / 2, x * 2); };
+  auto mapper = [](auto x) { return std::vector(x / 2, x * 2); };
   auto parser = parsers::map(parsers::digits, mapper);
 
   auto parsed1 = parser("11* 456 ").value();

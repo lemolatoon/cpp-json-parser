@@ -11,11 +11,13 @@ namespace parsers {
  *  そのremainingにさらに２つ目のパーサーを適用して結果のvalueのstd::pairを返す。
  *  ２つ目のパーサーの結果が`std::nullopt`なら、`std::nullopt`を返す。
  */
-template <class T, class U>
-Parser<std::pair<T, U>> auto inline join(Parser<T> auto primary_parser,
-                                         Parser<U> auto secondary_parser) {
+auto inline join(Parser auto primary_parser, Parser auto secondary_parser)
+    -> Parser<std::pair<ParserReturnType<decltype(primary_parser)>,
+                        ParserReturnType<decltype(secondary_parser)>>> auto{
   return [=](std::string_view input)
-             -> std::optional<ParserResult<std::pair<T, U>>> {
+             -> std::optional<ParserResult<
+                 std::pair<ParserReturnType<decltype(primary_parser)>,
+                           ParserReturnType<decltype(secondary_parser)>>>> {
     auto result = primary_parser(input);
 
     if (!result.has_value())
@@ -30,8 +32,10 @@ Parser<std::pair<T, U>> auto inline join(Parser<T> auto primary_parser,
 
     auto value2 = result2.value();
 
-    return ParserResult<std::pair<T, U>>{{value.value, value2.value},
-                                         value2.remaining};
+    return ParserResult<
+        std::pair<ParserReturnType<decltype(primary_parser)>,
+                  ParserReturnType<decltype(secondary_parser)>>>{
+        {value.value, value2.value}, value2.remaining};
   };
 }
 

@@ -3,7 +3,7 @@
 #include <vector>
 
 TEST(ParserTest, Choice) {
-  auto parser = parsers::choice<int>(
+  auto parser = parsers::choice(
       parsers::digits, parsers::map(parsers::string("null"),
                                     [](auto s) -> int { return s.size(); }));
 

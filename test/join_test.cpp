@@ -5,10 +5,9 @@
 
 TEST(ParserTest, Join) {
   auto plus_minus =
-      parsers::choice<char>(parsers::character('+'), parsers::character('-'));
+      parsers::choice(parsers::character('+'), parsers::character('-'));
 
-  auto signed_digits_parser =
-      parsers::join<char, int>(plus_minus, parsers::digits);
+  auto signed_digits_parser = parsers::join(plus_minus, parsers::digits);
 
   auto parsed1 = signed_digits_parser("+11* 456 ").value();
   EXPECT_EQ(parsed1.value, (std::pair{'+', 11}));
@@ -27,12 +26,12 @@ TEST(ParserTest, Join) {
 
 TEST(ParserTest, Joins) {
   auto plus_minus =
-      parsers::choice<char>(parsers::character('+'), parsers::character('-'));
+      parsers::choice(parsers::character('+'), parsers::character('-'));
 
-  auto parser = parsers::joins(
-      parsers::skip_whitespace<char>(plus_minus), parsers::digits,
-      parsers::skip_whitespace<std::string_view>(parsers::string("abc")),
-      parsers::skip_whitespace<int>(parsers::digits));
+  auto parser =
+      parsers::joins(parsers::skip_whitespace(plus_minus), parsers::digits,
+                     parsers::skip_whitespace(parsers::string("abc")),
+                     parsers::skip_whitespace(parsers::digits));
 
   auto parsed1 = parser("+11 abc 456 ").value();
   EXPECT_EQ(parsed1.value, (std::tuple<char, int, std::string_view, int>{
@@ -50,11 +49,10 @@ TEST(ParserTest, Joins) {
   auto parsed4 = parser("-11 ABC 256 ");
   EXPECT_TRUE(!parsed4.has_value());
 
-  auto parser2 = parsers::choice<std::string>(
+  auto parser2 = parsers::choice(
       map(parsers::string("[error]"), [](auto s) { return std::string(s); }),
-      map(parsers::joins(parsers::skip_whitespace<char>(plus_minus),
-                         parsers::digits,
-                         parsers::skip_whitespace<int>(parsers::digits)),
+      map(parsers::joins(parsers::skip_whitespace(plus_minus), parsers::digits,
+                         parsers::skip_whitespace(parsers::digits)),
           [](auto tuple) {
             auto [sign, digit, digit2] = tuple;
             if (sign == '-') {

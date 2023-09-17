@@ -2,8 +2,7 @@
 #include "gtest/gtest.h"
 
 TEST(ParserTest, Separated) {
-  auto parser =
-      parsers::separated<int, char>(parsers::digits, parsers::character(','));
+  auto parser = parsers::separated(parsers::digits, parsers::character(','));
 
   auto parsed1 = parser("12,123,456 ").value();
   EXPECT_EQ(parsed1.value, (std::vector{12, 123, 456}));
