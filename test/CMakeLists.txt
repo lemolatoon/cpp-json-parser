@@ -22,6 +22,7 @@ add_executable(googleTest
   many_test.cpp
   separated_test.cpp
   regex_test.cpp
+  exception_test.cpp
 )
 
 
