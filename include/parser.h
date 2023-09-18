@@ -94,4 +94,6 @@ template <Parser F>
 using ParserReturnType = UnwrapParserResult<
     typename std::invoke_result_t<F, std::string_view>::value_type>::type;
 
+using Unit = std::tuple<>;
+
 #endif // PARSER_H

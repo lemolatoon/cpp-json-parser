@@ -25,12 +25,14 @@ add_executable(googleTest
   exception_test.cpp
 )
 
+add_subdirectory(json)
 
 # internal
-target_link_libraries(googleTest parser exception)
+target_link_libraries(googleTest parser exception json)
+# test
+target_link_libraries(googleTest json_test)
 # external
 target_link_libraries(googleTest gtest_main)
 target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/test)
 
 enable_testing()
