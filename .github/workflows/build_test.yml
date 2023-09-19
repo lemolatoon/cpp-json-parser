@@ -34,11 +34,15 @@ jobs:
           # ninja version to download. Default: 1.10.0
           version: 1.10.0
 
+      - uses: friendlyanon/setup-vcpkg@v1
+        with: { committish: 6a349fe1fbea1e5fcda2e0775f555d829a5e82df }
+
       - name: Tools version
         run: |
           cmake --version
           ninja --version
           g++ --version
+          vcpkg --version
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
