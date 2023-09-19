@@ -16,9 +16,11 @@ std::optional<ParserResult<char>> digit(std::string_view input);
 
 std::optional<ParserResult<char>> onenine(std::string_view input);
 
-std::optional<ParserResult<std::string>> fraction(std::string_view input);
+std::optional<ParserResult<std::optional<std::string>>>
+fraction(std::string_view input);
 
-std::optional<ParserResult<std::string>> exponent(std::string_view input);
+std::optional<ParserResult<std::optional<std::pair<char, std::string>>>>
+exponent(std::string_view input);
 
 std::optional<ParserResult<std::string>> sign(std::string_view input);
 

@@ -3,6 +3,8 @@
 #include "parsers.h"
 #include "json/types.h"
 
+#include <tuple>
+
 using namespace parsers;
 
 namespace json {
@@ -18,8 +20,8 @@ std::optional<ParserResult<Number>> number(std::string_view input) {
       fraction,
       exponent
   ), [](auto tuple) {
-      auto [first, second, third] = tuple;
-      return Number{first + second + third};
+      auto [integer, fraction, exponent] = tuple;
+      return Number(integer, fraction, exponent);
   })(input);
   // clang-format on
 }
@@ -117,16 +119,17 @@ std::optional<ParserResult<char>> onenine(std::string_view input) {
  * ""
  * '.' digits
  */
-std::optional<ParserResult<std::string>> fraction(std::string_view input) {
+std::optional<ParserResult<std::optional<std::string>>>
+fraction(std::string_view input) {
   // clang-format off
   return choices(
-      map(string(""), [](auto view) { return std::string{view}; }),
+      map(string(""), [](auto view) -> std::optional<std::string> { return std::nullopt; }),
       map(join(
           character('.'),
           digits
-      ), [](auto tuple) {
+      ), [](auto tuple) -> std::optional<std::string> {
           auto [first, second] = tuple;
-          return std::string{first} + std::string{second};
+          return std::string{second};
       })
   )(input);
   // clang-format on
@@ -138,11 +141,11 @@ std::optional<ParserResult<std::string>> fraction(std::string_view input) {
  * 'E' sign digits
  * 'e' sign digits
  */
-std::optional<ParserResult<std::string>> exponent(std::string_view input) {
-  auto to_string_mapper = [](auto view) { return std::string{view}; };
+std::optional<ParserResult<std::optional<std::pair<char, std::string>>>>
+exponent(std::string_view input) {
   // clang-format off
-  return choices(
-      map(string(""), to_string_mapper),
+  return choice(
+      map(string(""), [](auto s) -> std::optional<std::pair<char, std::string>> {return std::nullopt;}),
       map(joins(
           choices(
               character('E'),
@@ -150,9 +153,9 @@ std::optional<ParserResult<std::string>> exponent(std::string_view input) {
           ),
           sign,
           digits
-      ), [](auto tuple) {
+      ), [](auto tuple) -> std::optional<std::pair<char, std::string>> {
           auto [first, second, third] = tuple;
-          return std::string{first} + std::string{second} + std::string{third};
+          return std::make_pair(first, second + third);
       }))
   (input);
   // clang-format on
