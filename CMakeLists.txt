@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 set (CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 # set(CMAKE_CXX_CLANG_TIDY clang-tidy;checks=*,readability*,-header-filter=.*)
 
 # CMAKE_TOOLCHAIN_FILE が無指定なら、環境変数 VCPKG_ROOT を元に設定.

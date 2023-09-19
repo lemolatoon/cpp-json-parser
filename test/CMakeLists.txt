@@ -11,7 +11,7 @@ set (CMAKE_CXX_STANDARD 20)
 # set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # FetchContent_MakeAvailable(googletest)
 
-find_package(GTest REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 add_executable(googleTest 
   character_test.cpp 
@@ -28,8 +28,6 @@ add_executable(googleTest
 )
 
 target_link_libraries(googleTest GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
-include_directories(${GTest_SOURCE_DIR}/googletest/include)
-include_directories(${GTest_INCLUDE_DIRS})
 
 add_subdirectory(json)
 
@@ -37,8 +35,7 @@ add_subdirectory(json)
 target_link_libraries(googleTest parser exception json)
 # test
 target_link_libraries(googleTest json_test)
-# external
-target_link_libraries(googleTest gtest_main)
+
 target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 enable_testing()
