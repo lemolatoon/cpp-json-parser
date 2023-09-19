@@ -16,6 +16,20 @@ sudo apt install -y g++-11
 export CXX='g++-20'
 ```
 
+### vcpkgのセットアップ (Ubuntu)
+```bash
+git clone https://github.com/microsoft/vcpkg
+cd vcpkg
+./bootstrap-vcpkg.sh
+```
+
+.bashrcにパスを設定 (以下は`~/bin`にcloneした場合)
+```bash
+# vcpkg
+export PATH="$HOME/bin/vcpkg/:$PATH"
+export VCPKG_ROOT="$HOME/bin/vcpkg"
+```
+
 ### clang-format-14がないとき (Ubuntuの場合)
 
 https://apt.llvm.org/ を基に、llvm v14 を install して、apt installする

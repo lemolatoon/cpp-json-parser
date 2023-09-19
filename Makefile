@@ -2,6 +2,8 @@
 	
 CLANG_FORMAT=clang-format-14
 
+CMAKE_ARGS+=-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake
+
 configure: FORCE
 	cmake -GNinja -S . -B build $(CMAKE_ARGS)
 
