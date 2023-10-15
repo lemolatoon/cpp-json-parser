@@ -56,10 +56,9 @@ escape(std::string_view input) {
     auto [prefix, tuple] = pair;
     auto [a1, a2, a3, a4] = tuple;
     auto into_int = [](auto hexchar) {
-      return (hexchar >= 'A' && hexchar <= 'E')
-                 ? (hexchar - 'A' + 10)
-                 : (hexchar >= 'a' && hexchar <= 'e') ? (hexchar - 'a' + 10)
-                                                      : (hexchar - '0');
+      return (hexchar >= 'A' && hexchar <= 'E')   ? (hexchar - 'A' + 10)
+             : (hexchar >= 'a' && hexchar <= 'e') ? (hexchar - 'a' + 10)
+                                                  : (hexchar - '0');
     };
     char16_t value = into_int(a1) * 4096 + into_int(a2) * 256 +
                      into_int(a3) * 16 + into_int(a4);
