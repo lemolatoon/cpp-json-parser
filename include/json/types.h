@@ -72,17 +72,16 @@ public:
   }
 }; // namespace json
 
-class String {
-private:
-  std::string original_;
-  icu::UnicodeString unicode_string_;
+class String : public json::Base<icu::UnicodeString> {
 
 public:
-  String(std::string original, icu::UnicodeString unicode_string)
-      : original_(original), unicode_string_(unicode_string) {}
+  String(std::string_view original, icu::UnicodeString unicode_string) {
+    this->original_ = original;
+    this->value_ = unicode_string;
+  }
   inline std::string_view original() const { return original_; }
   inline const icu::UnicodeString &unicode_string() const {
-    return unicode_string_;
+    return this->value_;
   }
 };
 

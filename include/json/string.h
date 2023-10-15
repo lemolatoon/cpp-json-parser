@@ -15,12 +15,12 @@ namespace json {
 
 std::optional<ParserResult<String>> string(std::string_view input);
 
-std::optional<ParserResult<std::pair<std::string, char16_t>>>
+std::optional<ParserResult<std::pair<std::string_view, char16_t>>>
 escape(std::string_view input);
 
 std::optional<ParserResult<char>> hex(std::string_view input);
 
-std::optional<ParserResult<std::pair<std::string, char16_t>>>
+std::optional<ParserResult<std::pair<std::string_view, char16_t>>>
 any_characters_except_double_quote_and_backslash(std::string_view input);
 
 } // namespace json

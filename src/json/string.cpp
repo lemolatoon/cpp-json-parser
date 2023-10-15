@@ -4,6 +4,7 @@
 #include "json/types.h"
 #include <cstdint>
 #include <numeric>
+#include <string_view>
 #include <utility>
 
 using namespace parsers;
@@ -12,22 +13,23 @@ namespace json {
 
 std::optional<ParserResult<String>> string(std::string_view input) {
   auto inner_content_mapper =
-      [](std::vector<std::pair<std::string, char16_t>> v) -> String {
+      [&](std::vector<std::pair<std::string_view, char16_t>> v) -> String {
     auto [original, content] = std::accumulate(
-        v.begin(), v.end(), std::make_pair(std::string{}, icu::UnicodeString{}),
-        [](auto acc, auto pair) {
+        v.begin(), v.end(),
+        std::make_pair(input.substr(0, 0), icu::UnicodeString{}),
+        [&](auto acc, auto pair) {
           auto [original1, content] = acc;
           auto [original2, ch] = pair;
-          return std::make_pair(original1 + original2, content + ch);
+          return std::make_pair(
+              std::string_view{input.data(),
+                               original1.size() + original2.size()},
+              content + ch);
         });
     return String{original, content};
   };
-  auto empty_mapper = [](auto arg) -> String {
-    return String{"\"\"", icu::UnicodeString()};
-  };
-  auto outer_mapper = [](std::tuple<char, String, char> tuple) -> String {
+  auto outer_mapper = [&](std::tuple<char, String, char> tuple) -> String {
     auto [prefix, str, suffix] = tuple;
-    return String{std::string{'\"'} + std::string{str.original()} + '\"',
+    return String{std::string_view{input.data(), 2 + str.original().size()},
                   str.unicode_string()};
   };
   // clang-format off
@@ -48,11 +50,11 @@ std::optional<ParserResult<String>> string(std::string_view input) {
     outer_mapper
   )(input);
   // clang-format on
-}
+} // namespace json
 
-std::optional<ParserResult<std::pair<std::string, char16_t>>>
+std::optional<ParserResult<std::pair<std::string_view, char16_t>>>
 escape(std::string_view input) {
-  auto into_codepoint = [](auto pair) {
+  auto into_codepoint = [&](auto pair) {
     auto [prefix, tuple] = pair;
     auto [a1, a2, a3, a4] = tuple;
     auto into_int = [](auto hexchar) {
@@ -62,16 +64,17 @@ escape(std::string_view input) {
     };
     char16_t value = into_int(a1) * 4096 + into_int(a2) * 256 +
                      into_int(a3) * 16 + into_int(a4);
-    auto original = prefix + std::string{a1} + a2 + a3 + a4;
+    auto original = input.substr(0, 5);
     return std::make_pair(original, value);
   };
 
-  auto backslash_prefixer = [](auto joined) {
+  auto backslash_prefixer = [&](auto joined) {
     auto [prefix, pair] = joined;
     auto [original, codepoint] = pair;
-    return std::make_pair(prefix + original, codepoint);
+    return std::make_pair(std::string_view{input.data(), original.size() + 1},
+                          codepoint);
   };
-  auto mapper = [](char ch) {
+  auto mapper = [&](char ch) {
     char converted = '!';
     switch (ch) {
     case '\"':
@@ -100,7 +103,7 @@ escape(std::string_view input) {
       break;
     }
 
-    return std::make_pair(std::string{ch}, static_cast<char16_t>(converted));
+    return std::make_pair(input.substr(0, 1), static_cast<char16_t>(converted));
   };
   // clang-format off
     return map(
@@ -162,7 +165,7 @@ std::optional<ParserResult<char>> hex(std::string_view input) {
   // clang-format on
 }
 
-std::optional<ParserResult<std::pair<std::string, char16_t>>>
+std::optional<ParserResult<std::pair<std::string_view, char16_t>>>
 any_characters_except_double_quote_and_backslash(std::string_view input) {
   if (input.empty() || input[0] == '\"' || input[0] == '\\') {
     return std::nullopt;
@@ -178,7 +181,7 @@ any_characters_except_double_quote_and_backslash(std::string_view input) {
   auto remaining = input.substr(rest.size());
 
   auto value = std::make_pair(rest, next);
-  return ParserResult<std::pair<std::string, char16_t>>{value, remaining};
+  return ParserResult<std::pair<std::string_view, char16_t>>{value, remaining};
 }
 
 } // namespace json
