@@ -3,6 +3,7 @@
 #include "parsers.h"
 #include "json/types.h"
 
+#include <string_view>
 #include <tuple>
 
 using namespace parsers;
@@ -33,29 +34,41 @@ std::optional<ParserResult<Number>> number(std::string_view input) {
  * '-' digit
  * '-' onenine digits
  */
-std::optional<ParserResult<std::string>> integer(std::string_view input) {
-  auto mapper = [](auto tuple) {
-    auto [first, second] = tuple;
-    return std::string{first} + std::string{second};
+std::optional<ParserResult<std::string_view>> integer(std::string_view input) {
+  auto mapper = [&](auto tuple) {
+    auto [got, view] = tuple;
+    return std::string_view{input.data(), view.size() + 1};
   };
   // clang-format off
+  auto onenine_digits = map(
+      join(
+        onenine,
+        digits
+      ), 
+      mapper
+    );
   return choices(
-          map(join(
-              onenine,
-              digits
-          ), mapper),
-          map(digit, [](auto ch) {return std::string{ch};}),
-          map(join(
-              character('-'),
-              digit
-          ), mapper),
-          map(join(
-              character('-'),
-              map(join(
-                  onenine,
-                  digits
-              ), mapper)
-          ), mapper)
+    onenine_digits,
+    map(
+      digit, 
+      [&](auto ch) {return std::string_view{input.data(), 1};}
+    ),
+    map(
+      join(
+        character('-'),
+        digit
+      ), 
+      [&](auto tuple) {
+        return std::string_view{input.data(), 2};
+      }
+    ),
+    map(
+      join(
+        character('-'),
+        onenine_digits
+      ), 
+      mapper
+    )
   )(input);
   // clang-format on
 }
@@ -65,20 +78,28 @@ std::optional<ParserResult<std::string>> integer(std::string_view input) {
  * digit
  * digit digits
  */
-std::optional<ParserResult<std::string>> digits(std::string_view input) {
+std::optional<ParserResult<std::string_view>> digits(std::string_view input) {
   // clang-format off
   return choice(
-      map(join(
+      map(
+        join(
           digit,
           digits
-      ), [](auto tuple) {
-          auto [first, second] = tuple;
-          return first + second;
-      }),
-      map(digit, [](auto ch) {return std::string{ch};})
+        ), 
+        [&](auto tuple) {
+          auto [got, original] = tuple;
+          return std::string_view{input.data(), original.size() + 1};
+        }
+      ),
+    map(
+      digit, 
+      [&](auto ch) {
+        return input.substr(0, 1);
+      }
+    )
   )(input);
   // clang-format on
-}
+} // namespace json
 
 /*
  * digit
@@ -119,18 +140,21 @@ std::optional<ParserResult<char>> onenine(std::string_view input) {
  * ""
  * '.' digits
  */
-std::optional<ParserResult<std::optional<std::string>>>
+std::optional<ParserResult<std::optional<std::string_view>>>
 fraction(std::string_view input) {
   // clang-format off
   return choices(
-      map(join(
-          character('.'),
-          digits
-      ), [](auto tuple) -> std::optional<std::string> {
-          auto [first, second] = tuple;
-          return std::string{second};
-      }),
-      map(string(""), [](auto view) -> std::optional<std::string> { return std::nullopt; })
+    map(join(
+        character('.'),
+        digits
+    ), [&](auto tuple) -> std::optional<std::string_view> {
+        auto [first, second] = tuple;
+        return std::string_view{input.data(), second.size() + 1};
+    }),
+    map(
+       empty, 
+       [](auto view) -> std::optional<std::string_view> { return std::nullopt; }
+    )
   )(input);
   // clang-format on
 }
@@ -141,25 +165,32 @@ fraction(std::string_view input) {
  * 'E' sign digits
  * 'e' sign digits
  */
-std::optional<ParserResult<std::optional<std::pair<char, std::string>>>>
+std::optional<ParserResult<std::optional<std::string_view>>>
 exponent(std::string_view input) {
+  auto mapper = [&](auto tuple) -> std::optional<std::string_view> {
+    auto [first, second, third] = tuple;
+    return std::string_view{input.data(), 1 + second.size() + third.size()};
+  };
   // clang-format off
-  return choice(
-    map(joins(
+  return choices(
+    map(
+      joins(
         choices(
-            character('E'),
-            character('e')
+          character('E'),
+          character('e')
         ),
         sign,
         digits
-    ), [](auto tuple) -> std::optional<std::pair<char, std::string>> {
-        auto [first, second, third] = tuple;
-        return std::make_pair(first, second + third);
-    }),
-    map(string(""), [](auto s) -> std::optional<std::pair<char, std::string>> {return std::nullopt;})
+      ),
+      mapper
+    ),
+    map(
+      empty,
+      [](auto view) -> std::optional<std::string_view> { return std::nullopt; }
+    )
   )(input);
   // clang-format on
-}
+} // namespace json
 
 /*
  * sign
@@ -167,14 +198,20 @@ exponent(std::string_view input) {
  * '+'
  * '-'
  */
-std::optional<ParserResult<std::string>> sign(std::string_view input) {
-  auto to_string_mapper = [](auto view) { return std::string{view}; };
+std::optional<ParserResult<std::string_view>> sign(std::string_view input) {
   // clang-format off
-  return map(choices(
-      string("+"),
-      string("-"),
-      string("")
-  ), to_string_mapper)(input);
+  return choices(
+      map(
+          choices(
+          string("+"),
+          string("-")
+      ),
+      [&](auto ch) {
+          return std::string_view{input.data(), 1};
+      }
+      ),
+      empty
+  )(input);
   // clang-format on
 }
 

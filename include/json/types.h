@@ -29,44 +29,48 @@ public:
   }
 };
 
-struct Number {
+class Number : public json::Base<double> {
 
-  inline Number(std::string integral, std::optional<std::string> fraction,
-                std::optional<std::pair<char, std::string>> exponent)
+private:
+  std::string_view integral_;
+  std::optional<std::string_view> fraction_;
+  std::optional<std::string_view> exponent_;
+
+public:
+  inline Number(std::string_view integral,
+                std::optional<std::string_view> fraction,
+                std::optional<std::string_view> exponent)
       : integral_{integral}, fraction_{fraction}, exponent_{exponent} {
-    original_cache_ = integral;
+    this->original_ = integral;
     if (fraction_.has_value()) {
-      original_cache_ += "." + *fraction_;
+      // `.` + fraction
+      this->original_ = std::string_view{
+          this->original_.data(), this->original_.size() + (*fraction_).size()};
     }
 
     if (exponent_.has_value()) {
-      original_cache_ += std::get<0>(*exponent_) + std::get<1>(*exponent_);
+      // `e` or `E` + exponent
+      this->original_ = std::string_view{
+          this->original_.data(), this->original_.size() + (*exponent_).size()};
     }
 
     try {
-      value_cache_ = std::stod(original_cache_);
+      this->value_ = std::stod(std::string{this->original_});
     } catch (std::exception &e) {
-      std::cout << "Error: " << e.what() << " by " << original_cache_
+      std::cout << "Error: " << e.what() << " by " << this->original_
                 << std::endl;
-      value_cache_ = std::numeric_limits<double>::max();
+      this->value_ = std::numeric_limits<double>::max();
     }
   }
 
-  inline double value() const { return value_cache_; }
-
-  inline const std::string_view original() const { return original_cache_; }
+  inline std::string_view integral() const { return integral_; }
+  inline std::optional<std::string_view> fraction() const { return fraction_; }
+  inline std::optional<std::string_view> exponent() const { return exponent_; }
 
   inline bool operator==(const Number &rhs) const {
     return value() == rhs.value();
   }
-
-private:
-  std::string integral_;
-  std::optional<std::string> fraction_;
-  std::optional<std::pair<char, std::string>> exponent_;
-  std::string original_cache_;
-  double value_cache_;
-};
+}; // namespace json
 
 class String {
 private:
