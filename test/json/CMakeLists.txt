@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 add_library(json_test STATIC
     number_test.cpp
     string_test.cpp
+    whitespace_test.cpp
 )
 
 find_package(GTest CONFIG REQUIRED)

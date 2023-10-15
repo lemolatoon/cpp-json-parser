@@ -2,12 +2,13 @@
 #define JSON_WHITESPACE_H
 
 #include "parser.h"
+#include "json/types.h"
 #include <optional>
 #include <string>
 
 namespace json {
 
-std::optional<ParserResult<Unit>> whitespace(std::string_view input);
+std::optional<ParserResult<Whitespace>> whitespace(std::string_view input);
 
 } // namespace json
 

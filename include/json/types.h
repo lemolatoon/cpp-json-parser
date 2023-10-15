@@ -11,6 +11,24 @@
 
 namespace json {
 
+template <class T> class Base {
+protected:
+  std::string_view original_;
+  T value_;
+
+public:
+  inline std::string_view original() const { return original_; }
+  inline const T &value() const { return value_; }
+};
+
+class Whitespace : public json::Base<std::string_view> {
+public:
+  Whitespace(std::string_view original, std::string_view value) {
+    this->original_ = original;
+    this->value_ = value;
+  }
+};
+
 struct Number {
 
   inline Number(std::string integral, std::optional<std::string> fraction,
