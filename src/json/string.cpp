@@ -56,13 +56,14 @@ escape(std::string_view input) {
     auto [prefix, tuple] = pair;
     auto [a1, a2, a3, a4] = tuple;
     auto into_int = [](auto hexchar) {
-      return (hexchar >= 'A' && hexchar <= 'E')   ? (hexchar - 'A' + 10)
-             : (hexchar >= 'a' && hexchar <= 'e') ? (hexchar - 'a' + 10)
-                                                  : (hexchar - '0');
+      return (hexchar >= 'A' && hexchar <= 'E')
+                 ? (hexchar - 'A' + 10)
+                 : (hexchar >= 'a' && hexchar <= 'e') ? (hexchar - 'a' + 10)
+                                                      : (hexchar - '0');
     };
     char16_t value = into_int(a1) * 4096 + into_int(a2) * 256 +
                      into_int(a3) * 16 + into_int(a4);
-    auto original = std::string{a1} + a2 + a3 + a4;
+    auto original = prefix + std::string{a1} + a2 + a3 + a4;
     return std::make_pair(original, value);
   };
 
@@ -70,6 +71,37 @@ escape(std::string_view input) {
     auto [prefix, pair] = joined;
     auto [original, codepoint] = pair;
     return std::make_pair(prefix + original, codepoint);
+  };
+  auto mapper = [](char ch) {
+    char converted = '!';
+    switch (ch) {
+    case '\"':
+      converted = '\"';
+      break;
+    case '\\':
+      converted = '\\';
+      break;
+    case '/':
+      converted = '/';
+      break;
+    case 'b':
+      converted = '\b';
+      break;
+    case 'f':
+      converted = '\f';
+      break;
+    case 'n':
+      converted = '\n';
+      break;
+    case 'r':
+      converted = '\r';
+      break;
+    case 't':
+      converted = '\t';
+      break;
+    }
+
+    return std::make_pair(std::string{ch}, static_cast<char16_t>(converted));
   };
   // clang-format off
     return map(
@@ -85,9 +117,7 @@ escape(std::string_view input) {
                     character('n'),
                     character('r'),
                     character('t')
-                ), [](auto ch) {
-                    return std::make_pair(std::string{ch}, static_cast<char16_t>(ch));
-                }),
+                ), mapper),
                 map(join(
                     character('u'),
                     joins(
