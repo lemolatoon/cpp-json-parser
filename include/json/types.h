@@ -11,6 +11,7 @@
 #include <tuple>
 #include <unicode/unistr.h>
 #include <variant>
+#include <vector>
 
 namespace json {
 
@@ -95,6 +96,19 @@ public:
   inline const icu::UnicodeString &unicode_string() const {
     return this->value_;
   }
+};
+
+class Value;
+
+class Array : public json::ValueBase {
+private:
+  std::vector<Value> value_;
+
+public:
+  Array(std::string_view original, std::vector<Value> value) : value_{value} {
+    this->original_ = original;
+  }
+  inline const std::vector<Value> &value() const { return this->value_; }
 };
 
 class True : public json::ValueBase {
