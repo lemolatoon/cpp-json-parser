@@ -18,6 +18,8 @@ test: build
 
 clean: FORCE
 	rm -rf build
+	rm -rf vcpkg_installed
+	rm -rf .cache
 
 fmt: FORCE
 	find src -name "*.cpp" | xargs $(CLANG_FORMAT) -i

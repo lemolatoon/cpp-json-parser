@@ -70,3 +70,19 @@ Version: 0.1.24
 Publisher: LLVM
 VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd
 ```
+
+
+## build
+```
+make build
+```
+
+## トラブルシューティング
+
+### Case1. `make`途中で、`vcpkg install`でこける。
+`icu`でコケていた場合。`***-dbg-err.log`をみると、`configure: error: 'autoconf-archive' is missing`とあった場合は、`autoconf-archive`を入れる必要がある。
+
+Ubuntuの場合
+```bash
+sudo apt-get install -y autoconf-archive
+```
