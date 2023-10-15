@@ -4,5 +4,6 @@
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/include"
     ],
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "xaver.clang-format"
 }
