@@ -1,6 +1,9 @@
 #ifndef JSON_TYPES_H
 #define JSON_TYPES_H
 
+#include <exception>
+#include <iostream>
+#include <limits>
 #include <optional>
 #include <string>
 #include <tuple>
@@ -22,7 +25,13 @@ struct Number {
       original_cache_ += std::get<0>(*exponent_) + std::get<1>(*exponent_);
     }
 
-    value_cache_ = std::stod(original_cache_);
+    try {
+      value_cache_ = std::stod(original_cache_);
+    } catch (std::exception &e) {
+      std::cout << "Error: " << e.what() << " by " << original_cache_
+                << std::endl;
+      value_cache_ = std::numeric_limits<double>::max();
+    }
   }
 
   inline double value() const { return value_cache_; }
@@ -38,7 +47,7 @@ private:
   std::optional<std::string> fraction_;
   std::optional<std::pair<char, std::string>> exponent_;
   std::string original_cache_;
-  float value_cache_;
+  double value_cache_;
 };
 
 class String {

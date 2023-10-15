@@ -40,11 +40,11 @@ std::optional<ParserResult<std::string>> integer(std::string_view input) {
   };
   // clang-format off
   return choices(
-          map(digit, [](auto ch) {return std::string{ch};}),
           map(join(
               onenine,
               digits
           ), mapper),
+          map(digit, [](auto ch) {return std::string{ch};}),
           map(join(
               character('-'),
               digit
@@ -68,14 +68,14 @@ std::optional<ParserResult<std::string>> integer(std::string_view input) {
 std::optional<ParserResult<std::string>> digits(std::string_view input) {
   // clang-format off
   return choice(
-      map(digit, [](auto ch) {return std::string{ch};}),
       map(join(
           digit,
           digits
       ), [](auto tuple) {
           auto [first, second] = tuple;
           return first + second;
-      })
+      }),
+      map(digit, [](auto ch) {return std::string{ch};})
   )(input);
   // clang-format on
 }
@@ -123,14 +123,14 @@ std::optional<ParserResult<std::optional<std::string>>>
 fraction(std::string_view input) {
   // clang-format off
   return choices(
-      map(string(""), [](auto view) -> std::optional<std::string> { return std::nullopt; }),
       map(join(
           character('.'),
           digits
       ), [](auto tuple) -> std::optional<std::string> {
           auto [first, second] = tuple;
           return std::string{second};
-      })
+      }),
+      map(string(""), [](auto view) -> std::optional<std::string> { return std::nullopt; })
   )(input);
   // clang-format on
 }
@@ -145,19 +145,19 @@ std::optional<ParserResult<std::optional<std::pair<char, std::string>>>>
 exponent(std::string_view input) {
   // clang-format off
   return choice(
-      map(string(""), [](auto s) -> std::optional<std::pair<char, std::string>> {return std::nullopt;}),
-      map(joins(
-          choices(
-              character('E'),
-              character('e')
-          ),
-          sign,
-          digits
-      ), [](auto tuple) -> std::optional<std::pair<char, std::string>> {
-          auto [first, second, third] = tuple;
-          return std::make_pair(first, second + third);
-      }))
-  (input);
+    map(joins(
+        choices(
+            character('E'),
+            character('e')
+        ),
+        sign,
+        digits
+    ), [](auto tuple) -> std::optional<std::pair<char, std::string>> {
+        auto [first, second, third] = tuple;
+        return std::make_pair(first, second + third);
+    }),
+    map(string(""), [](auto s) -> std::optional<std::pair<char, std::string>> {return std::nullopt;})
+  )(input);
   // clang-format on
 }
 
@@ -171,9 +171,9 @@ std::optional<ParserResult<std::string>> sign(std::string_view input) {
   auto to_string_mapper = [](auto view) { return std::string{view}; };
   // clang-format off
   return map(choices(
-      string(""),
       string("+"),
-      string("-")
+      string("-"),
+      string("")
   ), to_string_mapper)(input);
   // clang-format on
 }
