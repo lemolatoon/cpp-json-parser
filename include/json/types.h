@@ -4,6 +4,9 @@
 #include <optional>
 #include <string>
 #include <tuple>
+#include <unicode/unistr.h>
+
+namespace json {
 
 struct Number {
 
@@ -37,5 +40,21 @@ private:
   std::string original_cache_;
   float value_cache_;
 };
+
+class String {
+private:
+  std::string original_;
+  icu::UnicodeString unicode_string_;
+
+public:
+  String(std::string original, icu::UnicodeString unicode_string)
+      : original_(original), unicode_string_(unicode_string) {}
+  inline std::string_view original() const { return original_; }
+  inline const icu::UnicodeString &unicode_string() const {
+    return unicode_string_;
+  }
+};
+
+} // namespace json
 
 #endif // JSON_TYPES_H

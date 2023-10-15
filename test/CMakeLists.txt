@@ -25,6 +25,8 @@ add_executable(googleTest
   separated_test.cpp
   regex_test.cpp
   exception_test.cpp
+  json/number_test.cpp
+  json/string_test.cpp
 )
 
 target_link_libraries(googleTest GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
@@ -34,7 +36,7 @@ add_subdirectory(json)
 # internal
 target_link_libraries(googleTest parser exception json)
 # test
-target_link_libraries(googleTest json_test)
+# target_link_libraries(googleTest json_test)
 
 target_include_directories(googleTest PUBLIC ${PROJECT_SOURCE_DIR}/include)
 

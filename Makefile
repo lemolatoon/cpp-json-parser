@@ -7,7 +7,7 @@ CMAKE_ARGS+=-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmak
 configure: FORCE
 	cmake -GNinja -S . -B build $(CMAKE_ARGS)
 
-build: configure
+build:
 	ninja -C build
 
 run: build
