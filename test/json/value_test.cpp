@@ -22,7 +22,7 @@ TEST(JSON_PARSER, VALUE) {
   EXPECT_EQ(parsed3.remaining, ".");
 
   auto parsed4 = json::value(" \"こんにちは！　世界！！\"  .").value();
-  EXPECT_EQ(parsed4.value.original(), " null ");
+  EXPECT_EQ(parsed4.value.original(), " \"こんにちは！　世界！！\"  ");
   auto inner4 = dynamic_cast<json::String *>(parsed4.value.value().value.get());
   EXPECT_NE(inner4, nullptr);
   EXPECT_EQ(inner4->unicode_string(),
@@ -31,7 +31,7 @@ TEST(JSON_PARSER, VALUE) {
   EXPECT_EQ(parsed4.remaining, ".");
 
   auto parsed5 = json::value(" 125.51  .").value();
-  EXPECT_EQ(parsed5.value.original(), " 125.51 ");
+  EXPECT_EQ(parsed5.value.original(), " 125.51  ");
   auto inner5 = dynamic_cast<json::Number *>(parsed5.value.value().value.get());
   EXPECT_NE(inner5, nullptr);
   EXPECT_DOUBLE_EQ(inner5->value(), 125.51);

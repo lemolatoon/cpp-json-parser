@@ -17,8 +17,9 @@ std::optional<ParserResult<Value>> bool_true(std::string_view input) {
     ),
     [](auto tuple) {
       auto [ws_before, got, ws_after] = tuple;
-      auto t = std::make_unique<True>(True {got});
-      return Value{std::move(t), ws_before, ws_after};
+      return Value{
+      std::make_unique<True>(True {got})
+        , ws_before, ws_after};
     }
   )(input);
   // clang-format on

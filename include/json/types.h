@@ -139,11 +139,11 @@ private:
 
 public:
   Value(std::unique_ptr<ValueBase> value, Whitespace ws_before,
-        Whitespace ws_after)
-      : value_{ValueData{ws_before, std::move(value), ws_after}} {
+        Whitespace ws_after): value_{ValueData{ws_before, std::move(value), ws_after}} {
+    auto value_size = this->value_.value->original().size();
     this->original_ = std::string_view{ws_before.original().data(),
                                        ws_before.original().size() +
-                                           value->original().size() +
+                                           value_size +
                                            ws_after.original().size()};
   }
   inline const ValueData &value() const { return value_; }
