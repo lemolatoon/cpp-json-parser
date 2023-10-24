@@ -15,9 +15,7 @@ elements(std::string_view input) {
   return parsers::separated<false>(json::value, parsers::character(','))(input);
 }
 
-
-template <class T, class U>
-struct OriginalPair {
+template <class T, class U> struct OriginalPair {
   T first;
   U second;
 };

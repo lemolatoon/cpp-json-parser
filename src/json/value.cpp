@@ -60,7 +60,8 @@ std::optional<ParserResult<Value>> null(std::string_view input) {
 template <class T>
 static Value base_mapper(std::tuple<Whitespace, T, Whitespace> tuple) {
   auto [ws_before, got, ws_after] = std::move(tuple);
-  return Value{std::make_unique<T>(std::move(got)), std::move(ws_before), std::move(ws_after)};
+  return Value{std::make_unique<T>(std::move(got)), std::move(ws_before),
+               std::move(ws_after)};
 }
 
 std::optional<ParserResult<Value>> value(std::string_view input) {

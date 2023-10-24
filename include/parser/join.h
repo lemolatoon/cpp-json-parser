@@ -75,7 +75,8 @@ auto inline joins(Parser auto primary_parser, Parser auto... secondary_parsers)
           return ParserResult<
               std::tuple<ParserReturnType<decltype(primary_parser)>,
                          ParserReturnType<decltype(secondary_parsers)>...>>{
-              std::move(std::tuple_cat(std::tuple{std::move(value.value)}, std::move(rest_value.value))),
+              std::move(std::tuple_cat(std::tuple{std::move(value.value)},
+                                       std::move(rest_value.value))),
               rest_remaining};
         } else {
           auto value_remaining = value.remaining;

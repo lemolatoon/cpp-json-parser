@@ -21,7 +21,8 @@ TEST(JSON_PARSER, VALUE) {
   EXPECT_NE(inner3, nullptr);
   EXPECT_EQ(parsed3.remaining, ".");
 
-  auto parsed4 = std::move(json::value(" \"こんにちは！　世界！！\"  .").value());
+  auto parsed4 =
+      std::move(json::value(" \"こんにちは！　世界！！\"  .").value());
   EXPECT_EQ(parsed4.value.original(), " \"こんにちは！　世界！！\"  ");
   auto inner4 = dynamic_cast<json::String *>(parsed4.value.value().value.get());
   EXPECT_NE(inner4, nullptr);

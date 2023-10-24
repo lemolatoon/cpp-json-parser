@@ -26,8 +26,8 @@ TEST(JSON_PARSER, STRING) {
   auto parsed4 = std::move(string(R"("abcdef!!)"));
   EXPECT_TRUE(!parsed4.has_value());
 
-  auto parsed5 =
-      std::move(string(R"("あ\\あ\"あ\/あ\bあ\fあ\nあ\rあ\tあ\u306cあ")").value());
+  auto parsed5 = std::move(
+      string(R"("あ\\あ\"あ\/あ\bあ\fあ\nあ\rあ\tあ\u306cあ")").value());
   EXPECT_EQ(parsed5.value.original(),
             R"("あ\\あ\"あ\/あ\bあ\fあ\nあ\rあ\tあ\u306cあ")");
   // ぬ == U+306C

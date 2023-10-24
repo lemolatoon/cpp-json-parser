@@ -25,9 +25,7 @@ public:
   // we need constructor
   ValueBase() = default;
   // we need move constructor
-  ValueBase(ValueBase&&) = default;
-
-
+  ValueBase(ValueBase &&) = default;
 
   inline std::string_view original() const { return original_; }
 };
@@ -112,7 +110,8 @@ private:
   std::vector<Value> value_;
 
 public:
-  Array(std::string_view original, std::vector<Value> value) : value_{std::move(value)} {
+  Array(std::string_view original, std::vector<Value> value)
+      : value_{std::move(value)} {
     this->original_ = original;
   }
   inline const std::vector<Value> &value() const { return this->value_; }
@@ -146,12 +145,13 @@ private:
 
 public:
   Value(std::unique_ptr<ValueBase> value, Whitespace ws_before,
-        Whitespace ws_after): value_{ValueData{std::move(ws_before), std::move(value), std::move(ws_after)}} {
+        Whitespace ws_after)
+      : value_{ValueData{std::move(ws_before), std::move(value),
+                         std::move(ws_after)}} {
     auto value_size = this->value_.value->original().size();
-    this->original_ = std::string_view{ws_before.original().data(),
-                                       ws_before.original().size() +
-                                           value_size +
-                                           ws_after.original().size()};
+    this->original_ = std::string_view{
+        ws_before.original().data(),
+        ws_before.original().size() + value_size + ws_after.original().size()};
   }
   inline const ValueData &value() const { return value_; }
 };
