@@ -1,14 +1,10 @@
 #include "parsers.h"
 #include "json/value.h"
+#include "json/array.h"
 #include <iostream>
 
 int main() {
-  auto parser1 = parsers::string("string1");
-  auto parser2 = parsers::string("string2");
-  std::cout << parser1("string1").value().value;
-  std::cout << parser2("string2").value().value;
-  std::cout << "Hello World!\n";
-  auto parsed1 = json::value(" true .").value();
-  std::cout << parsed1.value.original() << std::endl;
+  auto parsed2 = std::move(json::array(R"([ ])").value());
+  std::cout << parsed2.value.original() << std::endl;
   return 0;
 }

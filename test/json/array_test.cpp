@@ -36,7 +36,7 @@ TEST(JSON_PARSER, ARRAY) {
   parsed1_iter++;
   EXPECT_EQ(parsed1_iter, parsed1_iter_end);
 
-  auto parsed2 = std::move(array(R"([])").value());
-  EXPECT_EQ(parsed2.value.original(), "[]");
+  auto parsed2 = std::move(array(R"([ ])").value());
+  EXPECT_EQ(parsed2.value.original(), "[ ]");
   EXPECT_EQ(parsed2.value.value().size(), 0);
 }

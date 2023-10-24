@@ -39,6 +39,7 @@ std::optional<ParserResult<Array>> array(std::string_view input) {
         parsers::map(
           whitespace,
           [&](auto ws) {
+            std::cout << "ws: " << ws.original().size() << std::endl;
             return OriginalPair<std::string_view, std::vector<Value>>{ws.original(), std::move(std::vector<Value>{})};
           }
         )
@@ -49,6 +50,7 @@ std::optional<ParserResult<Array>> array(std::string_view input) {
       auto [left, inner, right] = std::move(tuple);
       auto view = std::move(inner.first);
       auto elems = std::move(inner.second);
+      std::cout << "view_size: " << view.size() << std::endl;
       return Array{std::string_view{input.data(), 2 + view.size()}, std::move(elems)};
     }
   )(input);

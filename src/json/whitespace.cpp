@@ -8,8 +8,9 @@ using namespace parsers;
 namespace json {
 
 static std::optional<ParserResult<Whitespace>> empty(std::string_view input) {
-  std::string_view sv{""};
-  return ParserResult<Whitespace>{.value = Whitespace{sv, sv},
+  std::cout << "empty" << std::endl;
+  std::string_view sv = input.substr(0, 0);
+  return ParserResult<Whitespace>{.value = std::move(Whitespace{sv, sv}),
                                   .remaining = input};
 }
 
@@ -23,7 +24,6 @@ static std::optional<ParserResult<Whitespace>> empty(std::string_view input) {
  */
 std::optional<ParserResult<Whitespace>> whitespace(std::string_view input) {
   // clang-format off
-   
   return choices(
     map(
       join(
@@ -39,7 +39,10 @@ std::optional<ParserResult<Whitespace>> whitespace(std::string_view input) {
         auto [got, ws] = std::move(ch);
         std::string_view original = ws.original();
         auto new_original = std::string_view{input.data(), original.size() + 1};
-        return Whitespace(new_original, new_original);
+        std::cout << "original: " << original.size() << std::endl;
+        std::cout << "new_original: " << new_original << std::endl;
+        std::cout << "input: " << input << std::endl;
+        return std::move(Whitespace(new_original, new_original));
       }
     ),
     empty
