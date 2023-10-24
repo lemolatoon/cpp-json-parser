@@ -7,9 +7,13 @@
 
 namespace json {
 
-std::optional<ParserResult<Value>> element(std::string_view input);
+std::optional<ParserResult<Value>> element(std::string_view input) {
+  return json::value(input);
+}
 std::optional<ParserResult<std::vector<Value>>>
-elements(std::string_view input);
+elements(std::string_view input) {
+  return parsers::separated<false>(json::value, parsers::character(','))(input);
+}
 
 
 template <class T, class U>

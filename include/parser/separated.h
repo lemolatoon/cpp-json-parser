@@ -18,29 +18,30 @@ auto inline separated(Parser auto parser, Parser auto separator)
       [=](std::string_view input)
           -> std::optional<
               ParserResult<std::vector<ParserReturnType<decltype(parser)>>>> {
-        auto results = std::vector<ParserReturnType<decltype(parser)>>(0);
+        auto results = std::vector<ParserReturnType<decltype(parser)>>{};
 
-        auto result = parser(input);
+        auto result = std::move(parser(input));
         if (!result.has_value())
           return ParserResult<std::vector<ParserReturnType<decltype(parser)>>>{
-              results, input};
-        auto value = result.value();
-        results.push_back(value.value);
+              std::move(results), input};
+        auto value = std::move(result.value());
         input = value.remaining;
+        results.push_back(std::move(value.value));
 
         while (true) {
-          auto separator_result = separator(input);
+          auto separator_result = std::move(separator(input));
           if (!separator_result.has_value())
             break;
 
-          auto separator_value = separator_result.value();
-          auto result = parser(separator_value.remaining);
+          auto separator_value = std::move(separator_result.value());
+          auto separator_value_remaining = separator_value.remaining;
+          auto result = std::move(parser(separator_value_remaining));
 
           // 末尾がseparatorで終わってしまってる。
           if (!result.has_value()) {
             if constexpr (Trailing) {
               // Trailingがtrueのときは、最後のseparatorまで読み込み、結果を返す。
-              input = separator_value.remaining;
+              input = separator_value_remaining;
               break;
             } else {
               // そうでないときは、無効な入力なので、std::nulloptを返す。
@@ -48,14 +49,15 @@ auto inline separated(Parser auto parser, Parser auto separator)
             }
           }
 
-          auto value = result.value();
-          results.push_back(value.value);
+          auto value = std::move(result.value());
+          auto value_remaining = value.remaining;
+          results.push_back(std::move(value.value));
 
-          input = value.remaining;
+          input = value_remaining;
         }
 
         return ParserResult<std::vector<ParserReturnType<decltype(parser)>>>{
-            results, input};
+            std::move(results), input};
       };
 }
 
