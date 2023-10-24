@@ -22,6 +22,11 @@ protected:
 public:
   // make this class polymorphic
   virtual ~ValueBase() = default;
+  // we need constructor
+  ValueBase() = default;
+
+
+
   inline std::string_view original() const { return original_; }
 };
 
@@ -105,7 +110,7 @@ private:
   std::vector<Value> value_;
 
 public:
-  Array(std::string_view original, std::vector<Value> value) : value_{value} {
+  Array(std::string_view original, std::vector<Value> value) : value_{std::move(value)} {
     this->original_ = original;
   }
   inline const std::vector<Value> &value() const { return this->value_; }
@@ -139,7 +144,7 @@ private:
 
 public:
   Value(std::unique_ptr<ValueBase> value, Whitespace ws_before,
-        Whitespace ws_after): value_{ValueData{ws_before, std::move(value), ws_after}} {
+        Whitespace ws_after): value_{ValueData{std::move(ws_before), std::move(value), std::move(ws_after)}} {
     auto value_size = this->value_.value->original().size();
     this->original_ = std::string_view{ws_before.original().data(),
                                        ws_before.original().size() +

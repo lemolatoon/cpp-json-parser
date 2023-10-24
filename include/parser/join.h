@@ -18,24 +18,25 @@ auto inline join(Parser auto primary_parser, Parser auto secondary_parser)
              -> std::optional<ParserResult<
                  std::pair<ParserReturnType<decltype(primary_parser)>,
                            ParserReturnType<decltype(secondary_parser)>>>> {
-    auto result = primary_parser(input);
+    auto result = std::move(primary_parser(input));
 
     if (!result.has_value())
       return std::nullopt;
 
-    auto value = result.value();
+    auto value = std::move(result.value());
 
-    auto result2 = secondary_parser(value.remaining);
+    auto result2 = std::move(secondary_parser(value.remaining));
 
     if (!result2.has_value())
       return std::nullopt;
 
-    auto value2 = result2.value();
+    auto value2 = std::move(result2.value());
 
+    auto value2_remaining = value2.remaining;
     return ParserResult<
         std::pair<ParserReturnType<decltype(primary_parser)>,
                   ParserReturnType<decltype(secondary_parser)>>>{
-        {value.value, value2.value}, value2.remaining};
+        {std::move(value.value), std::move(value2.value)}, value2_remaining};
   };
 }
 
@@ -55,31 +56,33 @@ auto inline joins(Parser auto primary_parser, Parser auto... secondary_parsers)
           -> std::optional<ParserResult<
               std::tuple<ParserReturnType<decltype(primary_parser)>,
                          ParserReturnType<decltype(secondary_parsers)>...>>> {
-        auto result = primary_parser(input);
+        auto result = std::move(primary_parser(input));
 
         if (!result.has_value())
           return std::nullopt;
 
-        auto value = result.value();
+        auto value = std::move(result.value());
 
         if constexpr (sizeof...(secondary_parsers) > 0) {
-          auto rest = joins(secondary_parsers...)(value.remaining);
+          auto rest = std::move(joins(secondary_parsers...)(value.remaining));
 
           if (!rest.has_value())
             return std::nullopt;
 
-          auto rest_value = rest.value();
+          auto rest_value = std::move(rest.value());
 
+          auto rest_remaining = rest_value.remaining;
           return ParserResult<
               std::tuple<ParserReturnType<decltype(primary_parser)>,
                          ParserReturnType<decltype(secondary_parsers)>...>>{
-              std::tuple_cat(std::tuple{value.value}, rest_value.value),
-              rest_value.remaining};
+              std::move(std::tuple_cat(std::tuple{std::move(value.value)}, std::move(rest_value.value))),
+              rest_remaining};
         } else {
+          auto value_remaining = value.remaining;
           return ParserResult<
               std::tuple<ParserReturnType<decltype(primary_parser)>,
                          ParserReturnType<decltype(secondary_parsers)>...>>{
-              std::tuple{value.value}, value.remaining};
+              std::tuple{value.value}, std::move(value.remaining)};
         }
       };
 }

@@ -18,18 +18,18 @@ auto inline many(Parser auto parser)
               ParserResult<std::vector<ParserReturnType<decltype(parser)>>>> {
         auto results = std::vector<ParserReturnType<decltype(parser)>>(0);
         while (true) {
-          auto result = parser(input);
+          auto result = std::move(parser(input));
           if (!result.has_value())
             break;
 
-          auto value = result.value();
+          auto value = std::move(result.value());
           results.push_back(value.value);
 
           input = value.remaining;
         }
 
         return ParserResult<std::vector<ParserReturnType<decltype(parser)>>>{
-            results, input};
+            std::move(results), input};
       };
 }
 
