@@ -10,9 +10,30 @@ namespace json {
 std::optional<ParserResult<Value>> element(std::string_view input) {
   return json::value(input);
 }
-std::optional<ParserResult<std::vector<Value>>>
+std::optional<ParserResult<std::deque<Value>>>
 elements(std::string_view input) {
-  return parsers::separated<false>(json::value, parsers::character(','))(input);
+  // clang-format off
+  return parsers::choices(
+    parsers::map(
+      parsers::joins(
+        json::element,
+        parsers::character(','),
+        json::elements
+      ),
+      [&](std::tuple<Value, char, std::deque<Value>> tuple) {
+        auto [first, comma, rest] = std::move(tuple);
+        rest.push_front(std::move(first));
+        return std::move(rest);
+      }
+    ),
+    parsers::map(
+      json::element,
+      [&](auto elem) {
+        return std::deque<Value>{std::move(elem)};
+      }
+    )
+  )(input);
+  // clang-format on
 }
 
 template <class T, class U> struct OriginalPair {
@@ -20,6 +41,7 @@ template <class T, class U> struct OriginalPair {
   U second;
 };
 std::optional<ParserResult<Array>> array(std::string_view input) {
+  std::cout << "array_input:" << input << ":" << std::endl;
   // clang-format off
   return map(
     joins(
@@ -27,19 +49,28 @@ std::optional<ParserResult<Array>> array(std::string_view input) {
       choices(
         parsers::map(
           elements,
-          [&](auto elems) {
+          [&](std::deque<Value> elems_deque) {
+            std::cout << "array1_map:" << input << ":" << std::endl;
             size_t length = 0;
-            for (auto &elem : elems) {
-              // + 1 for the comma
-              length += elem.original().size() + 1;
+
+            // std::deque to std::vector
+            std::vector<Value> elems{elems_deque.begin(), elems_deque.end()};
+            // std::vector<Value> elems;
+            // for (auto it = elems_deque.begin(); it != elems_deque.end(); ++it) {
+            //   elems.emplace_back(std::move(*it));
+            // }
+
+            for (const auto& elem : elems) {
+              length += elem.original().size() + 1 /* comma */;
             }
+
             return OriginalPair<std::string_view, std::vector<Value>>{std::string_view{input.data(), length - 1 /* remove of trailing comma */}, std::move(elems)};
           }
         ),
         parsers::map(
           whitespace,
           [&](auto ws) {
-            std::cout << "ws: " << ws.original().size() << std::endl;
+            std::cout << "array2_map:" << input << ":" << std::endl;
             return OriginalPair<std::string_view, std::vector<Value>>{ws.original(), std::move(std::vector<Value>{})};
           }
         )

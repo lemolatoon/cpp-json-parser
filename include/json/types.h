@@ -22,10 +22,14 @@ protected:
 public:
   // make this class polymorphic
   virtual ~ValueBase() = default;
-  // we need constructor
-  ValueBase() = default;
-  // we need move constructor
-  ValueBase(ValueBase &&) = default;
+  // // we need constructor
+  // ValueBase() = default;
+  // // we need move constructor
+  // ValueBase(ValueBase &&) = default;
+  // ValueBase &operator=(ValueBase &&) = default;
+
+  // ValueBase(const ValueBase &) = delete;
+  // ValueBase &operator=(const ValueBase &) = delete;
 
   inline std::string_view original() const { return original_; }
 };

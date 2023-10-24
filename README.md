@@ -77,6 +77,9 @@ VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=llvm-vs
 make build
 ```
 
+## debug方法
+Ctrl+Shift+Pから`CMake: Debug`を使う
+
 ## トラブルシューティング
 
 ### Case1. `make`途中で、`vcpkg install`でこける。
