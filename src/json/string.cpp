@@ -28,7 +28,7 @@ std::optional<ParserResult<String>> string(std::string_view input) {
     return String{original, content};
   };
   auto outer_mapper = [&](std::tuple<char, String, char> tuple) -> String {
-    auto [prefix, str, suffix] = tuple;
+    auto [prefix, str, suffix] = std::move(tuple);
     return String{std::string_view{input.data(), 2 + str.original().size()},
                   str.unicode_string()};
   };

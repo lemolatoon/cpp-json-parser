@@ -24,14 +24,15 @@ auto inline map(Parser auto parser,
   return [=](std::string_view input)
              -> std::optional<ParserResult<
                  MapperReturnType<decltype(parser), decltype(mapper)>>> {
-    auto result = parser(input);
+    auto result = std::move(parser(input));
 
     if (result.has_value()) {
-      auto value = result.value();
+      auto value = std::move(result.value());
 
+      auto value_remaining = value.remaining;
       return ParserResult<MapperReturnType<decltype(parser), decltype(mapper)>>{
-          mapper(value.value),
-          value.remaining,
+          std::move(mapper(std::move(value.value))),
+          value_remaining,
       };
     }
 

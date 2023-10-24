@@ -24,6 +24,8 @@ public:
   virtual ~ValueBase() = default;
   // we need constructor
   ValueBase() = default;
+  // we need move constructor
+  ValueBase(ValueBase&&) = default;
 
 
 

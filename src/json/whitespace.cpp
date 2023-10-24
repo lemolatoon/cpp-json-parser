@@ -36,7 +36,7 @@ std::optional<ParserResult<Whitespace>> whitespace(std::string_view input) {
         whitespace
       ),
       [&](auto ch) {
-        auto [got, ws] = ch;
+        auto [got, ws] = std::move(ch);
         std::string_view original = ws.original();
         auto new_original = std::string_view{input.data(), original.size() + 1};
         return Whitespace(new_original, new_original);
