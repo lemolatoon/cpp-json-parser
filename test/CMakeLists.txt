@@ -31,6 +31,7 @@ add_executable(googleTest
   json/value_test.cpp
   json/array_test.cpp
   json/object_test.cpp
+  json/index_access_test.cpp
 )
 
 target_link_libraries(googleTest GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)

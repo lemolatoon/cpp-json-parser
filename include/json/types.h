@@ -17,6 +17,13 @@
 
 namespace json {
 
+class Object;
+class Array;
+class String;
+class Number;
+class True;
+class False;
+class Null;
 class ValueBase {
 protected:
   std::string_view original_;
@@ -37,6 +44,14 @@ public:
 
   inline const ValueBase &as_ref() const { return *this; }
   inline ValueBase &as_ref() { return *this; }
+
+  Object *as_object();
+  Array *as_array();
+  String *as_string();
+  Number *as_number();
+  True *as_true();
+  False *as_false();
+  Null *as_null();
 
   virtual ValueBase *operator[](icu::UnicodeString &key);
   virtual ValueBase *operator[](size_t key);
