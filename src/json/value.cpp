@@ -1,5 +1,6 @@
 #include "parser/choice.h"
 #include "parsers.h"
+#include "json/array.h"
 #include "json/number.h"
 #include "json/string.h"
 #include "json/types.h"
@@ -68,6 +69,14 @@ std::optional<ParserResult<Value>> value(std::string_view input) {
   // clang-format off
    
   return parsers::choices(
+    parsers::map(
+      parsers::joins(
+        whitespace,
+        json::array,
+        whitespace
+      ),
+      base_mapper<Array>
+    ),
     parsers::map(
       parsers::joins(
         whitespace,
