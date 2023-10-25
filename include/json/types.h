@@ -35,6 +35,9 @@ public:
 
   inline std::string_view original() const { return original_; }
 
+  inline const ValueBase &as_ref() const { return *this; }
+  inline ValueBase &as_ref() { return *this; }
+
   virtual ValueBase *operator[](icu::UnicodeString &key);
   virtual ValueBase *operator[](size_t key);
   virtual ValueBase *operator[](std::string_view key);

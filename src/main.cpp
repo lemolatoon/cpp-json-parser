@@ -1,5 +1,6 @@
 #include "parsers.h"
 #include "json/json.h"
+#include "json/types.h"
 #include <iostream>
 
 int main() {
@@ -13,9 +14,10 @@ int main() {
       json::parse(
           R"({"a": [true, false], "b": false, "c": null, "あ": "abc" })")
           .value());
-  std::cout << (*(*parsed2)["a"])[0]->original() << std::endl;
+  auto got = parsed2->as_ref()["a"]->as_ref()[0];
+  std::cout << got->original() << std::endl;
 
   auto parsed3 = std::move(json::parse(R"([1, 2, 3])").value());
-  std::cout << (*parsed3)[0]->original() << std::endl;
+  std::cout << parsed3->as_ref()[0]->original() << std::endl;
   return 0;
 }
