@@ -31,6 +31,7 @@ add_executable(googleTest
   json/value_test.cpp
   json/array_test.cpp
   json/object_test.cpp
+  json/json_test.cpp
   json/index_access_test.cpp
 )
 
