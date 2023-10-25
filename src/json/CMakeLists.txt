@@ -4,6 +4,7 @@ add_library(json STATIC
     whitespace.cpp
     number.cpp
     "string.cpp"
+    object.cpp
     value.cpp
     array.cpp
 )

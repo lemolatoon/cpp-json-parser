@@ -6,6 +6,7 @@ add_library(json_test STATIC
     array_test.cpp
     whitespace_test.cpp
     value_test.cpp
+    object_test.cpp
 )
 
 find_package(GTest CONFIG REQUIRED)

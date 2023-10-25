@@ -1,10 +1,13 @@
 #include "parsers.h"
-#include "json/array.h"
-#include "json/value.h"
+#include "json/object.h"
+#include "json/types.h"
 #include <iostream>
 
 int main() {
-  auto parsed2 = std::move(json::array(R"([ ])").value());
-  std::cout << parsed2.value.original() << std::endl;
+  auto parsed1 = std::move(
+      json::object(R"({"a": true, "b": false, "c": null, "あ": "abc" })")
+          .value());
+  std::cout << parsed1.value.original() << std::endl;
+  parsed1.value.value();
   return 0;
 }

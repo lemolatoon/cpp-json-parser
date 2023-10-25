@@ -1,6 +1,7 @@
 #include "json/array.h"
 #include "parser/separated.h"
 #include "parsers.h"
+#include "json/types.h"
 #include "json/value.h"
 #include "json/whitespace.h"
 #include <numeric>
@@ -38,10 +39,6 @@ elements(std::string_view input) {
   // clang-format on
 }
 
-template <class T, class U> struct OriginalPair {
-  T first;
-  U second;
-};
 std::optional<ParserResult<Array>> array(std::string_view input) {
   // clang-format off
   return map(
@@ -63,19 +60,19 @@ std::optional<ParserResult<Array>> array(std::string_view input) {
               length += elem.original().size() + 1 /* comma */;
             }
 
-            return OriginalPair<std::string_view, std::vector<Value>>{std::string_view{input.data(), length - 1 /* remove of trailing comma */}, std::move(elems)};
+            return parser_utils::UnfoldablePair<std::string_view, std::vector<Value>>{std::string_view{input.data(), length - 1 /* remove of trailing comma */}, std::move(elems)};
           }
         ),
         parsers::map(
           whitespace,
           [&](auto ws) {
-            return OriginalPair<std::string_view, std::vector<Value>>{ws.original(), std::move(std::vector<Value>{})};
+            return parser_utils::UnfoldablePair<std::string_view, std::vector<Value>>{ws.original(), std::move(std::vector<Value>{})};
           }
         )
       ),
       parsers::character(']')
     ),
-    [&](std::tuple<char, OriginalPair<std::string_view, std::vector<Value>>, char> tuple) {
+    [&](std::tuple<char, parser_utils::UnfoldablePair<std::string_view, std::vector<Value>>, char> tuple) {
       auto [left, inner, right] = std::move(tuple);
       auto view = std::move(inner.first);
       auto elems = std::move(inner.second);

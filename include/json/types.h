@@ -5,13 +5,13 @@
 #include <exception>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <tuple>
 #include <unicode/unistr.h>
-#include <variant>
 #include <vector>
 
 namespace json {
@@ -103,35 +103,15 @@ public:
   inline const icu::UnicodeString &unicode_string() const {
     return this->value_;
   }
-};
 
-class Value;
-
-class Array : public json::ValueBase {
-private:
-  std::vector<Value> value_;
-
-public:
-  Array(std::string_view original, std::vector<Value> value)
-      : value_{std::move(value)} {
-    this->original_ = original;
+  inline bool operator==(const String &rhs) const {
+    return unicode_string() == rhs.unicode_string();
   }
-  inline const std::vector<Value> &value() const { return this->value_; }
-};
-
-class True : public json::ValueBase {
-public:
-  True(std::string_view original) { this->original_ = original; }
-};
-
-class False : public json::ValueBase {
-public:
-  False(std::string_view original) { this->original_ = original; }
-};
-
-class Null : public json::ValueBase {
-public:
-  Null(std::string_view original) { this->original_ = original; }
+  inline bool operator!=(const String &rhs) const { return !(*this == rhs); }
+  inline bool operator<(const String &rhs) const {
+    return unicode_string() < rhs.unicode_string();
+  }
+  inline bool operator>(const String &rhs) const { return rhs < *this; }
 };
 
 struct ValueData {
@@ -158,6 +138,58 @@ public:
   inline const ValueData &value() const { return value_; }
 };
 
+class Array : public json::ValueBase {
+private:
+  std::vector<Value> value_;
+
+public:
+  Array(std::string_view original, std::vector<Value> value)
+      : value_{std::move(value)} {
+    this->original_ = original;
+  }
+  inline const std::vector<Value> &value() const { return this->value_; }
+};
+
+class Object : public json::ValueBase {
+private:
+  std::map<icu::UnicodeString, Value> value_;
+
+public:
+  Object(std::string_view original, std::map<icu::UnicodeString, Value> value)
+      : value_{std::move(value)} {
+    this->original_ = original;
+  }
+  inline const std::map<icu::UnicodeString, Value> &value() const {
+    return this->value_;
+  }
+
+  Value &operator[](const icu::UnicodeString &key) {
+    return this->value_.at(key);
+  }
+};
+
+class True : public json::ValueBase {
+public:
+  True(std::string_view original) { this->original_ = original; }
+};
+
+class False : public json::ValueBase {
+public:
+  False(std::string_view original) { this->original_ = original; }
+};
+
+class Null : public json::ValueBase {
+public:
+  Null(std::string_view original) { this->original_ = original; }
+};
+
 } // namespace json
+
+namespace parser_utils {
+template <class T, class U> struct UnfoldablePair {
+  T first;
+  U second;
+};
+} // namespace parser_utils
 
 #endif // JSON_TYPES_H
