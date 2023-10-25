@@ -8,6 +8,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <unicode/unistr.h>
 #include <variant>
@@ -34,17 +35,14 @@ public:
   inline std::string_view original() const { return original_; }
 };
 
-class Whitespace : public json::ValueBase {
+class Whitespace {
 private:
-  std::string_view value_;
+  std::string_view original_;
 
 public:
-  Whitespace(std::string_view original, std::string_view value)
-      : value_{value} {
-    this->original_ = original;
-  }
+  Whitespace(std::string_view original) : original_{original} {}
 
-  inline std::string_view value() const { return value_; }
+  inline std::string_view original() const { return original_; }
 };
 
 class Number : public json::ValueBase {

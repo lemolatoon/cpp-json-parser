@@ -29,7 +29,9 @@ elements(std::string_view input) {
     parsers::map(
       json::element,
       [&](auto elem) {
-        return std::deque<Value>{std::move(elem)};
+        auto deq = std::deque<Value>{};
+        deq.push_back(std::move(elem));
+        return std::move(deq);
       }
     )
   )(input);
@@ -41,7 +43,6 @@ template <class T, class U> struct OriginalPair {
   U second;
 };
 std::optional<ParserResult<Array>> array(std::string_view input) {
-  std::cout << "array_input:" << input << ":" << std::endl;
   // clang-format off
   return map(
     joins(
@@ -50,15 +51,13 @@ std::optional<ParserResult<Array>> array(std::string_view input) {
         parsers::map(
           elements,
           [&](std::deque<Value> elems_deque) {
-            std::cout << "array1_map:" << input << ":" << std::endl;
             size_t length = 0;
 
             // std::deque to std::vector
-            std::vector<Value> elems{elems_deque.begin(), elems_deque.end()};
-            // std::vector<Value> elems;
-            // for (auto it = elems_deque.begin(); it != elems_deque.end(); ++it) {
-            //   elems.emplace_back(std::move(*it));
-            // }
+            std::vector<Value> elems;
+            for (auto it = elems_deque.begin(); it != elems_deque.end(); ++it) {
+              elems.emplace_back(std::move(*it));
+            }
 
             for (const auto& elem : elems) {
               length += elem.original().size() + 1 /* comma */;
@@ -70,7 +69,6 @@ std::optional<ParserResult<Array>> array(std::string_view input) {
         parsers::map(
           whitespace,
           [&](auto ws) {
-            std::cout << "array2_map:" << input << ":" << std::endl;
             return OriginalPair<std::string_view, std::vector<Value>>{ws.original(), std::move(std::vector<Value>{})};
           }
         )
@@ -81,7 +79,6 @@ std::optional<ParserResult<Array>> array(std::string_view input) {
       auto [left, inner, right] = std::move(tuple);
       auto view = std::move(inner.first);
       auto elems = std::move(inner.second);
-      std::cout << "view_size: " << view.size() << std::endl;
       return Array{std::string_view{input.data(), 2 + view.size()}, std::move(elems)};
     }
   )(input);
