@@ -7,6 +7,7 @@ add_library(json STATIC
     object.cpp
     value.cpp
     array.cpp
+    types.cpp
 )
 target_include_directories(json PUBLIC ${PROJECT_SOURCE_DIR}/include)
 

@@ -8,6 +8,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -33,7 +34,11 @@ public:
   // ValueBase &operator=(const ValueBase &) = delete;
 
   inline std::string_view original() const { return original_; }
-};
+
+  virtual ValueBase *operator[](icu::UnicodeString &key);
+  virtual ValueBase *operator[](size_t key);
+  virtual ValueBase *operator[](std::string_view key);
+}; // namespace json
 
 class Whitespace {
 private:
@@ -88,6 +93,7 @@ public:
   inline bool operator==(const Number &rhs) const {
     return value() == rhs.value();
   }
+
 }; // namespace json
 
 class String : public json::ValueBase {
@@ -136,6 +142,19 @@ public:
         ws_before.original().size() + value_size + ws_after.original().size()};
   }
   inline const ValueData &value() const { return value_; }
+  inline ValueData &value() { return value_; }
+
+  ValueBase *operator[](icu::UnicodeString &key) override {
+    return this->value().value->operator[](key);
+  };
+  ValueBase *operator[](size_t index) override {
+    return this->value().value->operator[](index);
+  }
+
+  ValueBase *operator[](std::string_view key) override {
+    icu::UnicodeString uKey(key.data());
+    return this->operator[](uKey);
+  }
 };
 
 class Array : public json::ValueBase {
@@ -148,6 +167,8 @@ public:
     this->original_ = original;
   }
   inline const std::vector<Value> &value() const { return this->value_; }
+
+  ValueBase *operator[](size_t index) override { return &this->value_[index]; }
 };
 
 class Object : public json::ValueBase {
@@ -163,8 +184,12 @@ public:
     return this->value_;
   }
 
-  Value &operator[](const icu::UnicodeString &key) {
-    return this->value_.at(key);
+  inline ValueBase *operator[](const icu::UnicodeString &key) {
+    return &this->value_.at(key);
+  }
+  inline ValueBase *operator[](std::string_view &key) {
+    icu::UnicodeString uKey(key.data());
+    return this->operator[](uKey);
   }
 };
 
