@@ -13,7 +13,7 @@ sudo apt install -y g++-11
 .bashrc
 ```.bashrc
 ...
-export CXX='g++-20'
+export CXX='g++-14'
 ```
 
 ### vcpkgのセットアップ (Ubuntu)
